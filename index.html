@@ -461,10 +461,23 @@ button:disabled { cursor: default; }
 .cad-model-title .layer-batch-reset:hover { background: #394d5a; }
 .layer-batch-results, .layer-batch-results > .layer-panel, .layer-batch-controls > .utility-dialog { flex: 1; }
 /* 도면 편집 중에는 모형 공간을 보이게 하고, 평소에는 바로 아래 목록과 워크시트가 가려지지 않게 둡니다. */
-.layer-batch-drawing:has(.layer-canvas[data-pickable="true"]) > .cad-model-space {
+.layer-batch-drawing:has(.layer-canvas[data-pickable="true"]) > .cad-model-space,
+.qla-workspace:not([data-sheet-open="true"]) .layer-batch-drawing > .cad-model-space {
   position: sticky; inset-block-start: var(--manual-sticky-top); z-index: 2;
 }
-.layer-batch-results .table-view:not(.lrn-excel-table) thead th:first-child { width: 44%; }
+.layer-batch-results .table-view:not(.lrn-excel-table, .qla-excel-table) thead th:first-child { width: 44%; }
+.qla-list-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.qla-list-columns > fieldset { min-width: 0; align-content: start; }
+.qla-list-columns input[type="text"] { min-width: 0; width: 100%; padding: 4px 5px; border: 1px solid var(--line); border-radius: 4px; }
+.qla-memberships { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; overflow-wrap: anywhere; }
+.qla-memberships label { min-width: 0; }
+.qla-name-list { margin: 0; padding-left: 1rem; font-size: .79rem; overflow-wrap: anywhere; }
+/* 레이어명과 그룹명을 잘라내지 않고 워크시트 안에서 가로로 이동합니다. */
+.qla-sheet-scroll { max-height: 17rem; overflow: auto; }
+.qla-excel-table { white-space: nowrap; }
+.qla-excel-table input { min-width: 2ch; width: 100%; padding: 3px; border: 1px solid var(--line); text-align: center; }
+.sl-values { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; margin: 0; }
+.sl-values dd { margin: 0; font-variant-numeric: tabular-nums; text-align: right; }
 .layer-batch-controls .utility-field select {
   min-width: 0; max-width: 100%; padding: 4px 5px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: var(--white);
 }
@@ -1322,7 +1335,11 @@ window.portfolioCatalog = {
         "레이어·스타일",
         "CAD·Excel 연동"
       ],
-      "path": "Reference/CAD Lisp/[QLA]Xrecord에 사용자그룹 생성_Rev08.lsp"
+      "path": "Reference/CAD Lisp/[QLA]Xrecord에 사용자그룹 생성_Rev08.lsp",
+      "guideStatus": {
+        "status": "설명서 작성",
+        "detail": "레이어 그룹 소속·켜기/끄기, PURGE와 Xrecord 열람, QLA_EDIT 소속 편집 및 반영 · 웹 실습 · 커서 안내"
+      }
     },
     {
       "id": "cad-selz",
@@ -1333,7 +1350,11 @@ window.portfolioCatalog = {
         "선택·필터",
         "좌표·측정"
       ],
-      "path": "Reference/CAD Lisp/[SELZ]등고선 자연수 Z값 기준으로만 선택.lsp"
+      "path": "Reference/CAD Lisp/[SELZ]등고선 자연수 Z값 기준으로만 선택.lsp",
+      "guideStatus": {
+        "status": "설명서 수정",
+        "detail": "능선·골짜기의 입체 음영, 단색 등고선의 선택 굵기 구분, 기준값 10으로 배수·끝자리 비교 · 웹 실습 · 커서 안내"
+      }
     },
     {
       "id": "cad-sl",
@@ -1343,7 +1364,11 @@ window.portfolioCatalog = {
       "tags": [
         "좌표·측정"
       ],
-      "path": "Reference/CAD Lisp/[SL]실시간 거리, 각도, 기울기 표시_Rev01.lsp"
+      "path": "Reference/CAD Lisp/[SL]실시간 거리, 각도, 기울기 표시_Rev01.lsp",
+      "guideStatus": {
+        "status": "설명서 수정",
+        "detail": "도로 성토 사면·콘크리트 옹벽 횡단, 선 끝점 스냅과 실시간 거리·각도·기울기 측정 · 웹 실습 · 커서 안내"
+      }
     },
     {
       "id": "cad-sm",
@@ -1353,7 +1378,11 @@ window.portfolioCatalog = {
       "tags": [
         "도면 편집"
       ],
-      "path": "Reference/CAD Lisp/[SM]여러객체 스케일 동시변경.lsp"
+      "path": "Reference/CAD Lisp/[SM]여러객체 스케일 동시변경.lsp",
+      "guideStatus": {
+        "status": "설명서 수정",
+        "detail": "맨홀·집수정·밸브 등 시설물 심볼과 단위 객체 8개, 기준점 고정과 축척 전후 비교 · 웹 실습 · 커서 안내"
+      }
     },
     {
       "id": "cad-smerge",
@@ -2959,6 +2988,91 @@ window.exampleGuides = {
         '실행하기를 누르고 대상 수와 실제 변경 수를 확인합니다.'],
       result: '현재 목록의 각 문자열에서 원본문자와 정확히 일치하는 부분을 모두 대치한 뒤 머리말과 꼬리말을 붙입니다. 바꿀문자를 비워 두면 일치한 부분을 삭제합니다.',
       note: '대소문자 옵션은 검색 조건에만 적용됩니다. 대치와 추가를 함께 실행할 때 원본문자가 들어 있는 그룹에만 두 작업이 적용됩니다.'
+    }]
+  },
+  'cad-qla': {
+    title: '레이어 그룹 저장과 표시 관리',
+    introduction: '도면별로 레이어의 그룹 소속을 저장하고, 필요한 그룹의 레이어를 함께 켜거나 끕니다.',
+    environment: 'AutoCAD · 레이어 · Xrecord · Excel',
+    command: 'QLA',
+    setup: 'QLA 리습을 로드합니다. 그룹 구성은 현재 도면에 기록되므로 파일에 남기려면 DWG를 저장합니다. Excel 편집을 사용할 도면은 먼저 DWG로 저장해 둡니다.',
+    preview: { type: 'layer-preset', integrated: true, caption: 'QLA 설정과 QLA_EDIT 시트를 재현했습니다. 가상 도로 평면의 레이어를 관리하며 변경은 웹 실습에만 적용됩니다.' },
+    features: [{
+      id: 'membership', title: '그룹 만들기와 레이어 소속 편집',
+      steps: ['QLA를 실행합니다. 그룹 목록에서 기존 그룹을 고르거나 새 이름을 입력하고 그룹 추가를 누릅니다.',
+        '레이어 추가 (+) 또는 레이어 제거 (-)를 누릅니다. 검색어와 AND·OR 조건으로 후보를 좁힌 뒤 레이어를 골라 확인을 누릅니다.',
+        '오른쪽 목록의 레이어를 고르면 선택 레이어 그룹 소속에서 그룹별 포함 여부를 바로 편집할 수 있습니다. 이름 변경과 선택 그룹제거는 왼쪽 목록의 그룹에 적용합니다.'],
+      result: '한 레이어를 여러 그룹에 포함할 수 있습니다. 전체레이어는 도면의 모든 레이어를, 미지정레이어는 어느 그룹에도 들어 있지 않은 레이어를 표시합니다.',
+      note: '저장된 그룹의 이름은 앞뒤 공백과 영문 대소문자로 구분하지 않습니다. 전체레이어와 미지정레이어는 예약된 이름입니다.'
+    }, {
+      id: 'visibility', title: '그룹 켜기·끄기와 현재 상태 저장',
+      steps: ['그룹 또는 전체레이어·미지정레이어를 선택하고 오른쪽 목록에 적용할 레이어가 표시되는지 확인합니다.',
+        '선택그룹 켜기 또는 선택그룹 끄기를 누릅니다. 오른쪽 목록 전체에 적용되며 개별 행 선택은 소속 편집에 사용합니다.',
+        '현재 켜진 레이어로 그룹을 다시 구성하려면 저장된 그룹을 선택하고 현재 레이어 상태 그룹에 덮어쓰기를 누릅니다.'],
+      result: '켜기·끄기는 LayerOn 속성을 바꿉니다. 덮어쓰기는 도면 전체에서 켜진 레이어로 그 그룹의 소속 목록을 교체합니다.',
+      note: '동결·잠금·현재 레이어 설정은 유지됩니다. 동결 상태여도 LayerOn이 켜져 있으면 덮어쓰기 대상에 포함됩니다.'
+    }, {
+      id: 'purge', title: '추가·삭제된 레이어 확인과 그룹 정리',
+      steps: ['PURGE 대상 레이어 열람을 눌러 신규 레이어와 삭제·이름변경 전 레이어를 확인합니다.',
+        '그룹 PURGE를 눌러 현재 도면에 없는 레이어명을 소속 목록에서 정리합니다. 새 이름으로 바뀐 레이어는 필요한 그룹에 다시 넣습니다.'],
+      result: '저장된 레이어 목록을 현재 도면과 동기화합니다. 도면 자체의 레이어와 객체는 유지됩니다.'
+    }, {
+      id: 'xrecord', title: 'Xrecord의 저장 내용 열람', command: 'QLAVIEW',
+      steps: ['QLAVIEW를 실행하거나 QLA 설정창에서 Xrecord 열람을 누릅니다.',
+        '저장된 그룹을 고르고 각 멤버의 [있음] 또는 [없음] 표시를 확인합니다.'],
+      result: '현재 도면의 QLA Xrecord에서 그룹 소속을 읽어 표시합니다. 읽기 전용 화면에서 저장 기록과 현재 레이어의 차이를 확인할 수 있습니다.'
+    }, {
+      id: 'excel', title: 'Excel에서 전체 그룹 소속 일괄 편집',
+      steps: ['저장된 DWG를 열고 QLA의 전체그룹 엑셀출력을 누릅니다. 생성된 QLA_EDIT 시트의 5행에 열 제목, 6행부터 레이어와 소속이 표시됩니다.',
+        'B열 이후의 그룹 셀에 영문 대문자 O를 넣어 포함하거나 지워서 제외합니다. 그룹 제목·순서와 레이어명 목록은 유지합니다.',
+        '같은 AutoCAD 인스턴스에서 내보낸 DWG를 열어 둔 상태로 QLA List에 반영을 누릅니다. 대상 도면을 확인한 뒤 반영을 승인합니다.'],
+      result: '시트의 그룹·레이어 목록과 소속 셀을 검증한 뒤 DWG의 그룹을 갱신하고 저장합니다.',
+      note: 'Windows 데스크톱 AutoCAD와 Excel이 필요합니다. 반영 버튼을 생성하려면 Excel의 VBA 프로젝트 개체 모델 접근이 허용되어 있어야 합니다. 실제 반영 시 같은 DWG의 다른 미저장 변경도 함께 저장됩니다.'
+    }]
+  },
+  'cad-selz': {
+    title: '표고의 배수·끝자리로 등고선 선택',
+    introduction: '먼저 고른 객체에서 시작점의 Z값이 지정한 자연수 조건에 맞는 것만 선택합니다.',
+    environment: 'AutoCAD · 등고선 · 객체 선택',
+    setup: 'SELZ를 로드합니다. 표고를 부여한 등고선이나 Z를 확인할 객체를 준비합니다.',
+    preview: { type: 'elevation-filter', integrated: true, caption: '높이를 강조한 입체 지형입니다. 등고선을 클릭하거나 드래그하면 고른 선이 굵어집니다. 104.99998과 107.5에 같은 조건을 적용해 허용 오차에 따른 결과를 비교해 보세요.' },
+    features: [{
+      id: 'select-z', title: '후보 선택과 표고 조건 적용',
+      steps: ['SELZ를 실행하고 후보 객체를 선택합니다. AutoCAD에서는 Enter로 후보를 확정하면 설정창이 열립니다.',
+        '양의 정수 n을 입력합니다. 기본값은 웹 실습에서 10, 원본 리습에서 5입니다. 배수 또는 끝자리 방식을 고르고 확인을 누릅니다. 예를 들어 n이 10이면 120은 배수에 해당하고, 110은 배수와 끝자리 조건에 모두 해당합니다.',
+        '도면에서 남은 선택 객체와 명령창의 개수를 확인합니다. 웹 실습에서는 같은 후보에 두 조건을 연달아 적용할 수 있습니다.'],
+      result: '곡선은 시작점 Z를 읽습니다. 시작점을 읽을 수 없는 경량 폴리선은 표고를, 다른 객체는 DXF 그룹 10 좌표의 Z를 사용합니다.',
+      note: '가장 가까운 양의 정수와의 차이가 0.001 미만이어야 판정에 포함됩니다. 0이나 음수 표고는 제외됩니다. n이 여러 자리이면 끝자리 모드는 그 숫자열 전체로 끝나는지 검사합니다.'
+    }]
+  },
+  'cad-sl': {
+    title: '거리·경사각·기울기 실시간 측정',
+    introduction: '첫 점을 찍고 포인터를 움직이며 거리와 X·Y 성분, 경사각과 기울기를 확인합니다.',
+    environment: 'AutoCAD · 거리 · 각도 · 기울기',
+    setup: 'SL을 로드합니다. 객체의 정확한 점을 사용할 경우 AutoCAD에서 객체 스냅을 설정합니다.',
+    preview: { type: 'live-survey', integrated: true, caption: '도로 성토·옹벽 횡단입니다. 사면 마루에서 소단 시작점까지 재면 수평거리 6 m, 높이차 4 m, 기울기 1:1.5가 나옵니다. 선 끝점에 가까이 대면 사각형 스냅 표식이 표시됩니다. 터치 화면에서는 첫 점을 누른 뒤 손가락을 이동해 값을 미리 보고, 두 번째 점을 따로 누릅니다.' },
+    features: [{
+      id: 'measure', title: '두 점 사이의 수평·수직 거리와 경사 확인',
+      steps: ['SL을 실행하고 시작점을 지정합니다.',
+        '포인터를 이동해 전체 거리, X·Y 방향 거리와 안내선을 확인합니다. 두 방향 거리가 모두 있으면 X축과 이루는 예각과 기울기를 표시합니다.',
+        '끝점을 찍어 확정합니다. AutoCAD에서는 임시 안내선과 문자가 지워지고 최종값이 명령창에 남습니다. 진행 중 Esc로 취소할 수 있습니다.'],
+      result: '기울기는 1:X/Y와 Y/X의 백분율로 표시합니다. 수평 또는 수직 구간은 각도와 기울기 표시를 생략합니다.',
+      note: 'AutoCAD의 전체 거리는 두 점의 3차원 좌표를 사용합니다. X·Y 거리, 경사각과 기울기는 XY 성분을 기준으로 계산합니다.'
+    }]
+  },
+  'cad-sm': {
+    title: '각 객체의 기준점을 유지하며 일괄 축척 변경',
+    introduction: '여러 객체에 같은 축척 배율을 적용하며 삽입점이나 외곽 범위의 중심을 각각 고정합니다.',
+    environment: 'AutoCAD · 객체 축척',
+    setup: 'SM을 로드합니다. 블록·문자와 원·폴리선처럼 축척 기준이 다른 객체를 함께 선택할 수 있습니다.',
+    preview: { type: 'object-scale', integrated: true, caption: '맨홀·집수정·밸브 등 여덟 가지 객체 중 여러 개를 골라 보세요. 가로등은 기둥 밑 삽입점, 원형 관구는 중심이 고정됩니다. 변경 전 윤곽 표시를 켜면 점선으로 이전 크기를 확인할 수 있습니다.' },
+    features: [{
+      id: 'scale', title: '여러 객체를 각자의 기준점에서 확대·축소',
+      steps: ['SM을 실행하고 변경할 객체를 클릭하거나 창 선택합니다. AutoCAD에서는 Enter로 선택을 확정합니다.',
+        '스케일 팩터를 입력합니다. 1.5는 150% 확대, 0.5는 절반으로 축소합니다. 웹에서는 축척 변경을 눌러 적용합니다.',
+        '도면에서 객체별 기준점이 유지되고 크기가 달라졌는지 확인합니다. 이미 축척을 변경한 객체에 다시 적용하면 현재 크기에 배율을 곱합니다.'],
+      result: '삽입점 속성이 있는 블록과 문자는 삽입점을 사용합니다. 원과 폴리선 등은 각 객체의 경계 상자 중심을 사용합니다.',
+      note: '경계 상자를 읽을 수 없는 객체는 원본에서 건너뜁니다. 웹 실습에서는 양의 배율을 비교할 수 있습니다.'
     }]
   },
   'cad-vv': {
@@ -7978,10 +8092,10 @@ window.exampleGuides = {
     focus.focus({ preventScroll: true });
   }
 
-  function layerPicker(layers, onAdd, onBack, spatial) {
-    const panel = dialog(spatial ? '레이어 검색 및 추가' : '레이어 추가');
+  function layerPicker(layers, onAdd, onBack, spatial, { title, instruction, accessibleName, size = 5 } = {}) {
+    const panel = dialog(title || (spatial ? '레이어 검색 및 추가' : '레이어 추가'));
     panel.hidden = true;
-    const listBox = list('추가할 레이어', 5);
+    const listBox = list(accessibleName || '추가할 레이어', size);
     const first = input('search'), second = input('search'), sensitive = input('checkbox');
     const operator = radioGroup('layer-batch-filter', [['and', 'AND'], ['or', 'OR']], 'and');
     const filters = node('div', '', 'layer-batch-filters');
@@ -7994,7 +8108,7 @@ window.exampleGuides = {
     if (spatial) {
       filterGroup.append(actions(button('바운더리 선택', spatial.boundary), button('객체 직접선택', spatial.direct)));
     }
-    panel.append(filterGroup, node('p', '추가할 레이어를 목록에서 선택하세요.', 'layer-help'),
+    panel.append(filterGroup, node('p', instruction || '추가할 레이어를 목록에서 선택하세요.', 'layer-help'),
       fieldSet('검색 결과', listBox));
     if (spatial) panel.append(actions(button('모두 선택', () => setLayerOptions(listBox, shown, layers, shown)),
       button('선택 삭제', () => {
@@ -8614,6 +8728,282 @@ window.exampleGuides = {
       if (scope.value() === 'selected' && !pending.size) return '‘레이어 추가 (+)’에서 바꿀 레이어를 고르세요.';
       return '머리말·꼬리말 또는 치환 문자를 지정하고 ‘확인’을 누르세요.';
     }, { scope: workspace });
+    return workspace;
+  };
+
+  window.buildQlaPane = feature => {
+    const view = layerWorkspace('레이어 그룹 관리 (QLA)');
+    const { workspace, layers, main, panels, dock, element, badge, draw } = view;
+    workspace.classList.add('qla-workspace');
+    element.dataset.pickable = 'false';
+    const initialGroups = [
+      ['도로 검토', ['C-ROAD-AXIS', 'C-ROAD-EDGE']],
+      ['배수 검토', ['C-DRAIN-2', 'C-DRAIN-OLD']],
+      ['현장 표기', ['C-SITE-NOTE', 'C-DRAIN-2']],
+    ];
+    let groups, snapshot, groupName = '', scope = 'all', activeLayer = '', mode, sheetCells = [];
+    const newName = input('text'), renameName = input('text');
+    newName.setAttribute('aria-label', '새 그룹 이름');
+    renameName.setAttribute('aria-label', '변경할 그룹 이름');
+    function singleList(name, size) { const control = list(name, size); control.multiple = false; return control; }
+    const filterList = singleList('레이어 필터', 2), groupList = singleList('저장된 그룹 목록', 5);
+    const layerList = singleList('레이어 목록', 9), viewGroups = singleList('열람할 그룹', 4);
+    filterList.append(new Option('전체레이어', 'all'), new Option('미지정레이어', 'unassigned'));
+    const groupLabel = node('p', '', 'layer-help'), layerLabel = node('p', '', 'layer-help');
+    const groupsFields = node('div', '', 'qla-memberships');
+    const purgeStatus = node('p', '', 'layer-help'), status = notice();
+    const viewer = dialog('Xrecord 열람 (QLA)'), viewerLayers = node('ul', '', 'qla-name-list'), viewerStatus = notice();
+    const changes = dialog('PURGE 대상 레이어 열람'), addedList = node('ul', '', 'qla-name-list'), removedList = node('ul', '', 'qla-name-list');
+    const removal = dialog('그룹 제거 확인'), removalName = node('p', '', 'layer-help');
+    const closed = dialog('QLA');
+    const sheet = dialog('Excel · QLA_EDIT'), sheetScroll = node('div', '', 'qla-sheet-scroll');
+    const sheetStatus = notice();
+    sheet.hidden = true;
+    dock.append(sheet);
+    const toMain = () => { showPanel(view, main, groupName ? groupList : filterList); sync(); };
+    const picker = layerPicker(layers, updateMembers, toMain, null, { title: '그룹 레이어 편집',
+      instruction: '대상 레이어를 선택한 뒤 확인을 누르세요.', accessibleName: '그룹 편집 대상 레이어', size: 7 });
+    for (const panel of [picker.panel, viewer, changes, removal, closed]) panel.hidden = true;
+    panels.append(picker.panel, viewer, changes, removal, closed);
+
+    const addLayer = button('레이어 추가 (+)', () => editLayers('add'));
+    const removeLayer = button('레이어 제거 (-)', () => editLayers('remove'));
+    const overwrite = button('현재 레이어 상태 그룹에 덮어쓰기', () => {
+      const on = [...layers.keys()].filter(id => layers.get(id).on);
+      groups.set(groupName, new Set(on));
+      persist(`현재 켜진 레이어 ${on.length}개로 그룹을 갱신했습니다.`);
+    });
+    const removeGroup = button('선택 그룹제거', () => {
+      removalName.textContent = `‘${groupName}’ 그룹을 제거하시겠습니까?`;
+      showPanel(view, removal, no);
+    });
+    const rename = button('이름 변경', () => changeName(true));
+    const excel = button('전체그룹 엑셀출력', exportSheet);
+    const purge = button('그룹 PURGE', () => persist('저장된 그룹 목록을 현재 레이어와 동기화했습니다.'));
+    const inspect = button('PURGE 대상 레이어 열람', () => {
+      const [added, missing] = differences();
+      fillList(addedList, added);
+      fillList(removedList, missing);
+      showPanel(view, changes, closeChanges);
+    });
+    const onButton = button('선택그룹 켜기', () => toggleVisibility(true));
+    const offButton = button('선택그룹 끄기', () => toggleVisibility(false));
+    const xrecord = button('Xrecord 열람', openViewer);
+    const pair = node('div', '', 'qla-list-columns');
+    pair.append(fieldSet('그룹 목록', filterList, groupList, actions(newName, button('그룹 추가', () => changeName(false))),
+      actions(renameName, rename), actions(removeGroup, excel), overwrite),
+    fieldSet('레이어 목록', layerList, groupLabel, actions(addLayer, removeLayer)));
+    main.append(pair, fieldSet('선택 레이어 그룹 소속', layerLabel, groupsFields),
+      fieldSet('저장된 그룹 목록 PURGE', purgeStatus, actions(inspect, purge)),
+      actions(onButton, offButton, button('닫기', () => showPanel(view, closed, reopen)), xrecord), status);
+
+    const closeViewer = button('닫기', toMain);
+    const closeChanges = button('닫기', toMain);
+    const no = button('아니오', toMain);
+    const reopen = button('QLA 열기', toMain);
+    viewer.append(fieldSet('저장된 그룹', viewGroups), fieldSet('기록된 레이어', viewerLayers), viewerStatus, actions(closeViewer));
+    changes.append(fieldSet('신규 레이어', addedList), fieldSet('삭제·이름변경 전 레이어', removedList),
+      actions(button('그룹 PURGE', () => { toMain(); persist('저장된 그룹 목록을 현재 레이어와 동기화했습니다.'); }), closeChanges));
+    removal.append(removalName, actions(button('예', () => {
+      groups.delete(groupName); groupName = ''; scope = 'all'; activeLayer = '';
+      toMain();
+      persist('선택 그룹을 제거했습니다.');
+    }), no));
+    closed.append(actions(reopen, button('QLAVIEW', openViewer)));
+    const applySheet = button('QLA List에 반영', importSheet);
+    sheet.append(node('p', '그룹에 포함할 셀에 영문 대문자 O를 입력합니다. 빈칸은 미소속입니다.', 'layer-help'),
+      actions(applySheet, button('워크시트 닫기', () => closeSheet('워크시트를 닫았습니다.'))), sheetScroll, sheetStatus);
+    // 표를 다시 내보내도 동일한 스크롤 영역에 안내를 연결해 중복 등록을 피합니다.
+    bindCursorGuide(sheetScroll, () => '편집할 소속 셀에 O 또는 빈칸을 넣고 ‘QLA List에 반영’을 누르세요.', { scope: sheet });
+
+    function fillList(target, names) {
+      target.replaceChildren(...names.map(name => node('li', name)));
+      if (!names.length) target.append(node('li', '없음'));
+    }
+    function visibleLayers() {
+      if (groupName) return sortIds([...groups.get(groupName)].filter(id => layers.has(id)), layers);
+      if (scope === 'all') return sortIds(layers.keys(), layers);
+      const assigned = new Set([...groups.values()].flatMap(ids => [...ids]));
+      return sortIds([...layers.keys()].filter(id => !assigned.has(id)), layers);
+    }
+    function differences() {
+      return [[...layers.keys()].filter(id => !snapshot.has(id)), [...snapshot].filter(id => !layers.has(id))];
+    }
+    function sync(message) {
+      const ids = visibleLayers(), [added, missing] = differences();
+      if (!ids.includes(activeLayer)) activeLayer = ids[0] || '';
+      filterList.value = groupName ? '' : scope;
+      groupList.replaceChildren(...[...groups.keys()].map(name => new Option(name, name)));
+      groupList.value = groupName;
+      layerList.replaceChildren(...ids.map(id => new Option(`${layers.get(id).name} · ${layers.get(id).on ? '켜짐' : '꺼짐'}`, id)));
+      layerList.value = activeLayer;
+      groupLabel.textContent = groupName ? `${groupName} 레이어 추가 / 제거` : '그룹 선택 시 레이어 추가 / 제거 가능';
+      for (const control of [renameName, rename, removeGroup, addLayer, removeLayer, overwrite]) control.disabled = !groupName;
+      excel.disabled = !groups.size;
+      purge.disabled = inspect.disabled = !added.length && !missing.length;
+      onButton.disabled = offButton.disabled = !ids.length;
+      purgeStatus.textContent = purge.disabled ? '저장된 목록과 현재 레이어가 일치합니다.' :
+        `그룹 PURGE 필요 · 신규 ${added.length}개 / 삭제·이름변경 ${missing.length}개`;
+      status.textContent = message || '그룹이나 레이어를 고르고 소속을 확인하세요.';
+      badge.textContent = `켜진 레이어 ${[...layers.values()].filter(layer => layer.on).length}개`;
+      renderMembership();
+      draw(new Set(activeLayer ? [activeLayer] : []));
+    }
+    function renderMembership() {
+      layerLabel.textContent = activeLayer ? `선택 레이어 · ${activeLayer}` : '레이어를 선택하세요.';
+      groupsFields.replaceChildren(...[...groups].map(([name, members]) => {
+        const toggle = input('checkbox');
+        toggle.checked = members.has(activeLayer);
+        toggle.disabled = !activeLayer;
+        toggle.addEventListener('change', () => {
+          const selectedLayer = activeLayer;
+          if (toggle.checked) members.add(selectedLayer);
+          else members.delete(selectedLayer);
+          persist(`‘${name}’의 레이어 소속을 갱신했습니다.`);
+          if (activeLayer === selectedLayer) [...groupsFields.children].find(field => field.textContent === name)
+            ?.querySelector('input')?.focus({ preventScroll: true });
+        });
+        return label(name, toggle);
+      }));
+      if (!groups.size) groupsFields.append(node('p', '등록된 그룹이 없습니다.', 'layer-help'));
+    }
+    function persist(message) {
+      // 원본의 저장 경로처럼 현재 이름이 없는 멤버를 정리한 뒤 레이어 목록 스냅샷을 갱신합니다.
+      for (const members of groups.values()) for (const id of members) if (!layers.has(id)) members.delete(id);
+      snapshot = new Set(layers.keys());
+      sync(message);
+    }
+    function changeName(edit) {
+      const editor = edit ? renameName : newName;
+      const name = editor.value.trim();
+      const key = name.toUpperCase();
+      if (!name || (edit && name === groupName)) {
+        status.textContent = edit ? '변경할 그룹 이름을 입력하세요.' : '그룹 이름을 입력하세요.';
+        editor.focus({ preventScroll: true });
+        return;
+      }
+      if (['전체레이어', '미지정레이어'].includes(key) ||
+          [...groups.keys()].some(existing => (!edit || existing !== groupName) && existing.toUpperCase() === key)) {
+        status.textContent = '이미 존재하거나 예약된 그룹 이름입니다.';
+        editor.focus({ preventScroll: true });
+        return;
+      }
+      if (edit) groups = new Map([...groups].map(([old, members]) => [old === groupName ? name : old, members]));
+      else { groups.set(name, new Set()); newName.value = ''; activeLayer = ''; }
+      groupName = renameName.value = name;
+      persist(edit ? '그룹 이름을 변경했습니다.' : '새 그룹을 추가했습니다.');
+    }
+    function editLayers(operation) {
+      const members = groups.get(groupName);
+      const ids = [...layers.keys()].filter(id => members.has(id) === (operation === 'remove'));
+      if (!ids.length) { status.textContent = '이 작업에서 선택할 레이어가 없습니다.'; return; }
+      mode = operation;
+      picker.open(ids);
+      showPanel(view, picker.panel, picker.first);
+    }
+    function updateMembers(ids) {
+      toMain();
+      if (!ids.length) return;
+      const group = groups.get(groupName);
+      for (const id of ids) {
+        if (mode === 'remove') group.delete(id);
+        else group.add(id);
+      }
+      persist(`레이어 ${ids.length}개의 소속을 변경했습니다.`);
+    }
+    function toggleVisibility(on) {
+      const ids = visibleLayers();
+      const count = ids.filter(id => layers.get(id).on !== on).length;
+      for (const id of ids) layers.get(id).on = on;
+      sync(`레이어 ${count}개 변경 · ${ids.length - count}개 동일`);
+    }
+    function openViewer() {
+      viewGroups.replaceChildren(...[...groups.keys()].map(name => new Option(name, name)));
+      viewGroups.disabled = !groups.size;
+      viewGroups.selectedIndex = groups.size ? 0 : -1;
+      updateViewer();
+      showPanel(view, viewer, groups.size ? viewGroups : closeViewer);
+    }
+    function updateViewer() {
+      const members = [...(groups.get(viewGroups.value) || [])];
+      fillList(viewerLayers, members.map(id => `${layers.has(id) ? '[있음]' : '[없음]'} ${id}`));
+      viewerStatus.textContent = groups.size ? `기록된 레이어 ${members.length}개` : 'Xrecord에 저장된 그룹이 없습니다.';
+    }
+    function exportSheet() {
+      const grid = node('table', '', 'table-view qla-excel-table');
+      const head = grid.createTHead().insertRow();
+      function header(row, text, scope = '') {
+        const cell = node('th', text);
+        cell.scope = scope;
+        row.append(cell);
+      }
+      header(head, '5', 'row'); header(head, '레이어명', 'col');
+      for (const name of groups.keys()) header(head, name, 'col');
+      sheetCells = [];
+      const body = grid.createTBody();
+      for (const [i, id] of sortIds(layers.keys(), layers).entries()) {
+        const row = body.insertRow();
+        header(row, String(i + 6), 'row');
+        row.insertCell().textContent = layers.get(id).name;
+        for (const [name, members] of groups) {
+          const cell = input('text', members.has(id) ? 'O' : '');
+          cell.setAttribute('aria-label', `${id} · ${name}`);
+          row.insertCell().append(cell);
+          sheetCells.push({ name, id, cell });
+        }
+      }
+      sheetScroll.replaceChildren(grid);
+      sheet.hidden = false;
+      workspace.dataset.sheetOpen = 'true';
+      main.hidden = true;
+      sheetStatus.textContent = '표를 편집한 뒤 ‘QLA List에 반영’을 누르세요.';
+      sheet.scrollIntoView({ block: 'nearest' });
+    }
+    function importSheet() {
+      const invalid = sheetCells.find(({ cell }) => cell.value !== '' && cell.value !== 'O');
+      if (invalid) {
+        sheetStatus.textContent = '영문 대문자 O 또는 빈칸만 입력할 수 있습니다.';
+        invalid.cell.focus();
+        return;
+      }
+      // 모든 셀을 검증한 뒤 그룹 소속을 한 번에 교체합니다. 웹의 도면은 메모리에서만 바뀝니다.
+      groups = new Map([...groups.keys()].map(name => [name, new Set()]));
+      for (const { name, id, cell } of sheetCells) if (cell.value === 'O') groups.get(name).add(id);
+      closeSheet();
+      persist('워크시트의 그룹 소속을 샘플 도면에 반영했습니다.');
+    }
+    function closeSheet(message) {
+      sheet.hidden = true;
+      workspace.dataset.sheetOpen = 'false';
+      sheetCells = [];
+      sheetScroll.replaceChildren();
+      toMain();
+      if (message) status.textContent = message;
+    }
+    function reset() {
+      groups = new Map(initialGroups.map(([name, ids]) => [name, new Set(ids)]));
+      snapshot = new Set([...layers.keys()].map(id => id === 'C-DRAIN-10' ? 'C-DRAIN-OLD' : id));
+      groupName = ''; scope = 'all'; activeLayer = '';
+      newName.value = renameName.value = '';
+      closeSheet();
+    }
+    filterList.addEventListener('change', () => {
+      groupName = ''; scope = filterList.value; activeLayer = ''; renameName.value = ''; sync();
+    });
+    groupList.addEventListener('change', () => {
+      groupName = renameName.value = groupList.value; activeLayer = ''; sync();
+    });
+    layerList.addEventListener('change', () => { activeLayer = layerList.value; renderMembership(); draw(new Set([activeLayer])); });
+    viewGroups.addEventListener('change', updateViewer);
+    view.reset.addEventListener('click', reset);
+    reset();
+    if (feature?.id === 'xrecord') openViewer();
+    bindCursorGuide(element, () => !sheet.hidden ? 'Excel 표에서 그룹 소속을 편집하세요.' :
+      !viewer.hidden ? '저장된 그룹을 골라 현재 도면에 레이어가 있는지 확인하세요.' :
+      !picker.panel.hidden ? '대상 레이어를 고른 뒤 ‘확인’을 누르세요.' :
+      !changes.hidden ? '신규 레이어와 삭제·이름변경 전 레이어를 확인하세요.' :
+      !closed.hidden ? '‘QLA 열기’로 설정창을 다시 열 수 있습니다.' :
+      '오른쪽에서 그룹이나 레이어를 고르고 모형 공간의 표시를 확인하세요.', { scope: workspace });
     return workspace;
   };
 })();
@@ -10093,6 +10483,478 @@ window.exampleGuides = {
     });
     reset();
     bindCursorGuide(element, nextAction, { scope: scene.view });
+    return scene.view;
+  };
+
+  function fillPolygon(context, path, color) {
+    context.beginPath();
+    context.moveTo(...path[0]);
+    for (const point of path.slice(1)) context.lineTo(...point);
+    context.closePath();
+    context.fillStyle = color;
+    context.fill();
+  }
+
+  // 등고선과 음영 면에 같은 투영을 적용합니다. 화면에서만 높이를 강조하며 필터는 원래 표고 z를 사용합니다.
+  const selzProject = ([u, v, z]) => [400 + 227 * u + 67 * v, 208 - 37 * u + 124 * v - (z - 90) * 3.2];
+  const selzFootprint = [[-1.25, -1.25], [1.25, -1.25], [1.25, 1.25], [-1.25, 1.25]]
+    .map(([u, v]) => selzProject([u, v, 90]));
+  const selzAngles = Array.from({ length: 96 }, (_, index) => index * Math.PI / 48);
+  function selzRing(z, radius) {
+    return selzAngles.map(a => {
+      // 골짜기와 돌출 능선의 변화는 산기슭에서 크게, 정상으로 갈수록 완만하게 반영합니다.
+      const relief = .115 * Math.cos(2 * a + .65) + .065 * Math.sin(3 * a - .55) + .026 * Math.cos(5 * a + .4) -
+        .215 * Math.exp(-15 * (1 - Math.cos(a - .84))) + .12 * Math.exp(-9 * (1 - Math.cos(a - 2.24)));
+      const r = radius * (1 + relief * (.55 + .45 * radius));
+      return [-.17 * (1 - radius) + Math.cos(a) * r, .2 * (1 - radius) + Math.sin(a) * r, z];
+    });
+  }
+  const selzLevels = [
+    [95, 1.04, 13], [100, .91, 29], [104.99998, .77, 43], [107.5, .67, 58],
+    [110, .57, 7], [112, .48, 41], [115, .36, 20], [120, .19, 81],
+  ];
+  const selzRelief = [selzRing(90, 1.15), ...selzLevels.map(([z, radius]) => selzRing(z, radius)),
+    selzRing(122, .065), selzRing(122.6, 0)];
+  const selzProjected = selzRelief.map(ring => ring.map(selzProject));
+  const selzContourColor = '#d3ded0';
+  const selzContours = selzLevels.map(([z, , labelAt], index) => {
+    const ring = selzProjected[index + 1];
+    return { z, path: [...ring, ring[0]], labelAt };
+  });
+  const selzDatum = { z: 0, at: [97, 444], path: [[97, 444]], color: '#b0c6d2' };
+  const selzShapes = [...selzContours, selzDatum];
+
+  function selzFaceTone([a, b, c, d]) {
+    // 네 꼭짓점의 방향을 평균해 면의 법선을 계산합니다. 평면 좌표 한 단위는 지형에서 31m입니다.
+    const vector = ([x, y, z], [u, v, w]) => [31 * (u - x), 31 * (v - y), w - z];
+    const sum = (p, q) => p.map((value, index) => value + q[index]);
+    const [tx, ty, tz] = sum(vector(a, b), vector(d, c));
+    const [ix, iy, iz] = sum(vector(a, d), vector(b, c));
+    const nx = ty * iz - tz * iy, ny = tz * ix - tx * iz, nz = tx * iy - ty * ix;
+    // 왼쪽 위에서 비추는 빛을 적용해 같은 표고에서도 골과 능선의 방향 차이가 보이게 합니다.
+    const light = Math.max(0, (-.66 * nx - .48 * ny + .575 * nz) / Math.hypot(nx, ny, nz));
+    const elevation = (a[2] + d[2]) / 2 - 90;
+    return `hsl(${128 - elevation * 1.65} 22% ${19 + 34 * light + elevation * .16}%)`;
+  }
+
+  function paintSelzTerrain(context) {
+    const [backLeft, backRight, frontRight, frontLeft] = selzFootprint;
+    const down = ([x, y], depth) => [x, y + depth];
+    fillPolygon(context, [backRight, frontRight, down(frontRight, 19), down(backRight, 19)], '#303b33');
+    fillPolygon(context, [frontRight, frontLeft, down(frontLeft, 19), down(frontRight, 19)], '#495144');
+    stroke(context, [down(backRight, 19), down(frontRight, 19), down(frontLeft, 19)], '#758478', 1);
+    fillPolygon(context, [backLeft, backRight, frontRight, frontLeft], '#3d5047');
+    context.save();
+    context.clip();
+    // 같은 면의 3차원 좌표로 조명을 계산하고, 투영 좌표로 화면에 그립니다.
+    for (const [level, outer] of selzRelief.slice(0, -1).entries()) {
+      const inner = selzRelief[level + 1];
+      const outerPath = selzProjected[level], innerPath = selzProjected[level + 1];
+      for (const index of selzAngles.keys()) {
+        const next = (index + 1) % selzAngles.length;
+        const color = selzFaceTone([outer[index], outer[next], inner[next], inner[index]]);
+        const face = [outerPath[index], outerPath[next], innerPath[next], innerPath[index]];
+        fillPolygon(context, face, color);
+        // 타일 사이의 서브픽셀 틈에 캔버스 격자가 비치지 않게 닫힌 가장자리를 겹칩니다.
+        stroke(context, face, color, .9, true);
+      }
+    }
+    context.restore();
+    stroke(context, selzFootprint, '#839583', 1.3, true);
+  }
+
+  window.buildSelzPane = () => {
+    const scene = workspace('Z값 기반 객체 선택 (SELZ)', 474);
+    const { element, context, panel, commands, status, badge } = scene;
+    // 바뀌지 않는 지형 음영을 먼저 그려 두고 선택이나 드래그 중에는 등고선만 갱신합니다.
+    const terrain = node('canvas');
+    terrain.width = element.width;
+    terrain.height = element.height;
+    const terrainContext = terrain.getContext('2d');
+    if (terrainContext) paintSelzTerrain(terrainContext);
+    const n = input('number'), multiple = input('radio'), suffix = input('radio');
+    n.min = '1'; n.step = '1';
+    multiple.name = suffix.name = 'selz-mode';
+    panel.insertBefore(fieldSet('선택 조건 설정', label('기준 값 (n)', n),
+      fieldSet('필터링 방식', label('Z값이 n의 배수인 객체', multiple), label('Z값의 끝자리가 n인 객체', suffix))), commands);
+    const confirm = button('확인', run);
+    commands.append(confirm, button('취소', () => choose([], '작업을 취소했습니다.')), button('샘플 리셋', reset));
+    const selected = new Set();
+    let result = null;
+    const events = connectSelection(scene, {
+      items: () => selzShapes, draw, pick: shape => { toggle(selected, shape); changed(); }, range: shapes => choose(shapes),
+      distance: (point, shape) => shape.at ? pwDistance(point, shape.at) : nearPath(point, shape.path),
+    });
+    function choose(shapes, message) {
+      replaceSelection(selected, shapes);
+      changed(message);
+    }
+    function changed(message) {
+      result = null;
+      status.textContent = message || '도면에서 후보를 선택하고 필터 조건을 지정하세요.';
+      draw();
+    }
+    function reset() {
+      // 첫 화면과 샘플 리셋에 같은 연습용 기준값을 적용합니다.
+      n.value = '10'; multiple.checked = true;
+      events.clear();
+      choose([]);
+    }
+    function run() {
+      const value = n.valueAsNumber;
+      if (!(Number.isSafeInteger(value) && value >= 1)) {
+        status.textContent = '기준 값(n)은 1 이상의 자연수여야 합니다.';
+        return;
+      }
+      // 원본처럼 양의 정수에서 0.001 미만 떨어진 Z만 후보로 사용합니다. 끝자리는 여러 자리도 비교합니다.
+      const matched = [...selected].filter(({ z }) => {
+        const integer = Math.trunc(z + .5);
+        return integer > 0 && Math.abs(z - integer) < .001 &&
+          (multiple.checked ? integer % value === 0 : String(integer).endsWith(String(value)));
+      });
+      result = new Set(matched);
+      status.textContent = matched.length ? '선택된 Z · ' + matched.map(shape => String(shape.z)).join(', ') : '조건에 맞는 객체가 없습니다.';
+      draw();
+    }
+    function draw() {
+      confirm.disabled = !selected.size;
+      badge.textContent = result ? `조건 일치 ${result.size}개 / 후보 ${selected.size}개` : `후보 ${selected.size}개 선택`;
+      if (!context) return;
+      context.clearRect(0, 0, element.width, element.height);
+      context.drawImage(terrain, 0, 0);
+      const marked = result || selected;
+      // 모든 등고선의 색을 고정합니다. 선택 결과는 호버보다 큰 굵기로 표시해 포인터를 떼어도 구분합니다.
+      for (const shape of selzContours) {
+        const width = marked.has(shape) ? 4.8 : events.current() === shape ? 2.1 : 1.4;
+        stroke(context, shape.path, selzContourColor, width);
+      }
+      context.save();
+      context.textAlign = 'center';
+      context.font = 'bold 22px Consolas, monospace';
+      for (const shape of selzContours) {
+        const [x, y] = shape.path[shape.labelAt];
+        const text = String(shape.z);
+        context.strokeStyle = '#29372f';
+        context.lineWidth = 5;
+        context.strokeText(text, x, y + 5);
+        objectText(context, text, x, y + 5, selzContourColor, marked.has(shape));
+      }
+      context.restore();
+      const style = objectStyle(selzDatum.color, marked.has(selzDatum), events.current() === selzDatum);
+      pointMark(context, selzDatum.at, style.color, 7, style.width);
+      context.font = '19px "Noto Sans KR", sans-serif';
+      objectText(context, '표고 미입력점 · Z 0', 113, 450, selzDatum.color, marked.has(selzDatum));
+    }
+    for (const control of [n, multiple, suffix]) control.addEventListener('input', () => changed());
+    reset();
+    bindCursorGuide(element, () => result ? '굵게 표시된 등고선과 오른쪽의 Z를 비교하세요.' :
+      selected.size ? '기준 값과 필터링 방식을 정한 뒤 ‘확인’을 누르세요.' : '필터에 넣을 등고선이나 점을 클릭 또는 드래그하세요.', { scope: scene.view });
+    return scene.view;
+  };
+
+  const slScale = 24;
+  const slRoad = [[77, 137], [211, 132], [292, 128], [400, 123]];
+  const slPavement = [[77, 137], [77, 147], [292, 138], [400, 133], [400, 123]];
+  const slSlope = [[400, 123], [544, 219], [615, 219]];
+  const slWall = [[615, 219], [640, 219], [652, 291], [694, 291], [694, 306], [587, 306], [587, 291], [611, 291]];
+  const slGround = [[77, 232], [170, 220], [249, 241], [355, 255], [467, 253], [557, 267], [612, 285], [681, 286], [750, 295]];
+  const slFinish = [[652, 291], [681, 286], [750, 291]];
+  // 스냅 후보를 화면에 그리는 선의 정점에서 읽습니다. 표고 기호와 주석 지시선은 참조용입니다.
+  const slEndpoints = [...slRoad, ...slPavement, ...slSlope, ...slWall, ...slGround, ...slFinish];
+
+  function paintSlSection(context) {
+    fillPolygon(context, [...slGround, [750, 349], [77, 349]], '#34352e');
+    fillPolygon(context, [[77, 137], ...slRoad.slice(1), ...slSlope.slice(1), [611, 291],
+      [557, 267], [467, 253], [355, 255], [249, 241], [170, 220], [77, 232]], '#454238');
+    fillPolygon(context, slPavement, '#3b505a');
+    stroke(context, slPavement, '#7895a2', 1.25, true);
+    fillPolygon(context, slWall, '#4b555d');
+    context.save();
+    context.clip();
+    for (let x = 503; x < 703; x += 11) stroke(context, [[x, 309], [x + 94, 215]], '#7d8990', 1);
+    context.restore();
+    context.setLineDash([9, 6]);
+    stroke(context, slGround, '#c5a77e', 1.75);
+    context.setLineDash([]);
+    stroke(context, slRoad, '#c4d9e5', 2);
+    stroke(context, slSlope, '#a5d6a3', 2.3);
+    stroke(context, slWall, '#c6d1dc', 2, true);
+    stroke(context, slFinish, '#a5d6a3', 2);
+
+    context.font = 'bold 20px "Noto Sans KR", sans-serif';
+    objectText(context, '횡단 STA. 0+120', 35, 38, '#c8d8e1');
+    context.font = '19px "Noto Sans KR", sans-serif';
+    objectText(context, '계획 도로', 183, 109, '#c4d9e5');
+    objectText(context, '성토 사면', 442, 129, '#a5d6a3');
+    stroke(context, [[455, 137], [455, 144], [471, 170]], '#829f83', 1.2);
+    objectText(context, '소단', 550, 201, '#a5d6a3');
+    objectText(context, '현황지반', 224, 275, '#c5a77e');
+    stroke(context, [[250, 257], [259, 244]], '#a08b72', 1);
+    objectText(context, '콘크리트 옹벽', 613, 169, '#c6d1dc');
+    stroke(context, [[649, 177], [649, 190], [630, 218]], '#99aab5', 1.2);
+    context.font = '18px Consolas, monospace';
+    objectText(context, 'EL 112.40', 337, 100, '#acbdc6');
+    objectText(context, 'EL 108.40', 510, 250, '#acbdc6');
+
+    // 도면의 X·Y 비율은 동일합니다. 수평 축척으로 웹의 m 단위를 확인할 수 있습니다.
+    const x = 52, y = 373, span = slScale * 2;
+    stroke(context, [[x, y], [x + span * 2, y]], '#99abb7', 1.3);
+    for (let i = 0; i < 3; i++) {
+      const tick = x + span * i;
+      stroke(context, [[tick, y - 4], [tick, y + 4]], '#99abb7', 1.3);
+      objectText(context, String(i * 2), tick - 4, y + 20, '#b5c5ce');
+    }
+    objectText(context, 'm', x + span * 2 + 12, y + 20, '#b5c5ce');
+  }
+
+  function slValues([x, y], [endX, endY]) {
+    const dx = Math.abs(endX - x) / slScale, dy = Math.abs(endY - y) / slScale;
+    const diagonal = dx > 0 && dy > 0;
+    return { dx, dy, distance: Math.hypot(dx, dy), angle: diagonal ? Math.atan2(dy, dx) * 180 / Math.PI : null,
+      slope: diagonal ? `1:${(dx / dy).toFixed(4)} (${(dy / dx * 100).toFixed(1)}%)` : null };
+  }
+
+  window.buildSlPane = () => {
+    const scene = workspace('실시간 거리·각도·기울기 (SL)', 413);
+    const { element, context, badge, panel, commands, status } = scene;
+    const snapEnabled = input('checkbox');
+    const result = node('dl', '', 'sl-values');
+    result.setAttribute('aria-label', '측정값');
+    panel.insertBefore(fieldSet('웹 실습 설정', label('횡단선 끝점 스냅', snapEnabled)), commands);
+    panel.insertBefore(fieldSet('측정 결과', result), commands);
+    let start = null, preview = null, snapped = false, final = null;
+    const cancel = button('취소', () => clear('측정을 취소했습니다.'));
+    commands.append(button('새 측정', () => clear()), cancel, button('샘플 리셋', () => { snapEnabled.checked = true; clear(); }));
+    function clear(message = '') {
+      start = preview = final = null;
+      snapped = false;
+      status.textContent = message || '사면 마루나 옹벽 모서리의 선 끝점에 첫 점을 찍으세요.';
+      update();
+    }
+    function findSnap(point) {
+      return snapEnabled.checked ? nearest(slEndpoints, point, 10 * element.width / element.getBoundingClientRect().width, pwDistance) : null;
+    }
+    function update() {
+      const values = final || (start && preview && slValues(start, preview));
+      const display = values ? [['길이(X)', values.dx.toFixed(4) + ' m'], ['높이(Y)', values.dy.toFixed(4) + ' m'],
+        ['직선거리', values.distance.toFixed(4) + ' m'], ...(values.angle === null ? [] : [['각도', values.angle.toFixed(4) + '°'], ['기울기', values.slope]])] : [];
+      result.replaceChildren(...display.flatMap(([title, value]) => [node('dt', title), node('dd', value)]));
+      result.hidden = !values;
+      cancel.disabled = !start;
+      badge.textContent = final ? '최종 측정 결과' : start ? '두 번째 점 지정' : '첫 번째 점 지정';
+      draw();
+    }
+    function draw() {
+      if (!context) return;
+      context.clearRect(0, 0, element.width, element.height);
+      paintSlSection(context);
+      // 확정 뒤에는 원본 명령처럼 가이드와 임시 값 표기를 도면에서 지우고 결과 표에 남깁니다.
+      if (start) snapMarker(context, start, '', '#ff978a');
+      if (snapped && preview) snapMarker(context, preview, '', '#ffda91');
+      if (!start || !preview || pwDistance(start, preview) < .01) return;
+      const [x, y] = start, [u, v] = preview;
+      const angle = Math.atan2(v - y, u - x);
+      stroke(context, [start, [u, y], preview], '#8c9da4', 1.35);
+      stroke(context, [start, preview], '#8ee2a9', 2);
+      const wing = (direction) => [u - 10 * Math.cos(direction), v - 10 * Math.sin(direction)];
+      stroke(context, [wing(angle - .5), preview, wing(angle + .5)], '#8ee2a9', 2);
+      if (u !== x && v !== y) {
+        const horiz = u > x ? 0 : v > y ? Math.PI : -Math.PI;
+        const radius = Math.min(36, Math.abs(u - x) / 2);
+        stroke(context, arc(start, radius, horiz, angle), '#ff978a', 1.7);
+      }
+    }
+    bindCanvasSelection(element, {
+      canDrag: () => false,
+      pick(point) {
+        const target = findSnap(point) || point;
+        if (start) {
+          final = slValues(start, target);
+          start = preview = null; snapped = false;
+          status.textContent = '측정을 확정했습니다. 결과를 확인하거나 다음 기준점을 지정하세요.';
+        } else {
+          start = target; final = null; preview = null; snapped = false;
+          status.textContent = '다른 선 끝점에 포인터를 가까이 대어 값을 미리 보고 두 번째 점을 지정하세요.';
+        }
+        update();
+      },
+      redraw: draw,
+    });
+    element.addEventListener('pointermove', event => {
+      const point = pointerPosition(element, event);
+      if (!point) return;
+      const snap = findSnap(point);
+      snapped = Boolean(snap);
+      preview = start ? snap || point : snap;
+      update();
+    });
+    element.addEventListener('pointerleave', event => {
+      if (event.pointerType === 'touch') return;
+      preview = null; snapped = false; update();
+    });
+    snapEnabled.addEventListener('change', () => {
+      preview = null; snapped = false; update();
+    });
+    scene.view.addEventListener('keydown', event => { if (event.key === 'Escape' && start) clear('측정을 취소했습니다.'); });
+    snapEnabled.checked = true;
+    clear();
+    bindCursorGuide(element, () => start ? '포인터를 옮겨 측정값을 확인하고 두 번째 점을 지정하세요.' :
+      final ? '측정 결과에서 거리와 기울기를 확인하세요.' : '횡단선 끝점에 첫 번째 점을 찍으세요.', { scope: scene.view });
+    return scene.view;
+  };
+
+  const smLine = (...path) => ({ path, closed: false });
+  const smLoop = (...path) => ({ path, closed: true });
+  const smRing = (x, y, radius) => smLoop(...arc([x, y], radius, 0, 2 * Math.PI));
+  const smRect = (left, top, right, bottom) => smLoop([left, top], [right, top], [right, bottom], [left, bottom]);
+  function smSymbol(name, [x, y], color, parts, insertion) {
+    // 블록 안의 테두리, 격자, 밸브 등의 선은 한 객체로 선택하고 같은 삽입점에서 함께 변환합니다.
+    // 원과 경계석은 삽입점이 없으므로 각 형상을 실제로 그리는 좌표의 경계상자 중심을 씁니다.
+    const points = parts.flatMap(part => part.path);
+    const xs = points.map(point => point[0]), ys = points.map(point => point[1]);
+    const [u, v] = insertion || [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+    return { name, color, center: [x, y], base: [x + u, y + v],
+      parts: parts.map(({ path, closed }) => ({ closed, path: path.map(([a, b]) => [x + a, y + b]) })) };
+  }
+  const smShapes = [
+    smSymbol('우수 맨홀', [111, 106], '#a9d9c8', [
+      smRing(0, 0, 35), smRing(0, 0, 27), smRect(-14, -14, 14, 14),
+      ...[-7, 0, 7].flatMap(d => [smLine([-14, d], [14, d]), smLine([d, -14], [d, 14])]),
+    ], [0, 0]),
+    smSymbol('측구 집수정', [303, 106], '#a8cbee', [
+      smRect(-39, -25, 39, 25), smRect(-33, -18, 33, 18),
+      ...[-24, -16, -8, 0, 8, 16, 24].map(x => smLine([x, -18], [x, 18])),
+      smLine([-33, 0], [33, 0]),
+    ], [0, 0]),
+    smSymbol('제수밸브', [495, 106], '#e1b8ea', [
+      smLoop([-27, -23], [27, 23], [27, -23], [-27, 23]),
+      smLine([-42, 0], [-27, 0]), smLine([27, 0], [42, 0]),
+      smLine([-34, -12], [-34, 12]), smLine([34, -12], [34, 12]),
+      smLine([0, 0], [0, -23]), smRing(0, -28, 5),
+    ], [0, 0]),
+    smSymbol('가로등', [687, 106], '#ecd19b', [
+      smRing(-21, 17, 8), smLine([-21, 9], [-21, -18], [-14, -26], [15, -26]),
+      smLine([-17, 9], [-17, -16], [-12, -22], [15, -22]),
+      smLoop([15, -30], [28, -30], [38, -24], [28, -18], [15, -18]),
+    ], [-21, 17]),
+    smSymbol('옥외 소화전', [111, 289], '#efb2a7', [
+      smRing(0, 0, 20), smRing(0, 0, 9),
+      smLine([-18, -9], [-33, -9], [-33, 9], [-18, 9]), smLine([18, -9], [33, -9], [33, 9], [18, 9]),
+      smLine([-8, -18], [-8, -31], [8, -31], [8, -18]),
+      smLine([-38, -12], [-38, 12]), smLine([38, -12], [38, 12]),
+    ], [0, 0]),
+    smSymbol('원형 관구', [303, 289], '#a3d4e8', [smRing(0, 0, 34)]),
+    smSymbol('경계석 단면', [495, 289], '#c8d8af', [smLoop([-28, -25], [17, -25], [29, -13], [29, 25], [-28, 25])]),
+    { name: '맨홀 번호 문자', color: '#ecd19b', center: [687, 289], base: [615, 298], text: 'MH-104', font: 29 },
+  ];
+
+  window.buildSmPane = () => {
+    const scene = workspace('여러 객체의 축척 변경 (SM)', 390);
+    const { element, context, badge, panel, commands, status } = scene;
+    const factor = input('number', '1.5');
+    factor.step = 'any';
+    const showBefore = input('checkbox');
+    panel.insertBefore(fieldSet('축척 설정', label('스케일 팩터', factor), label('변경 전 윤곽 표시', showBefore)), commands);
+    const selected = new Set(), scales = new Map(), previous = new Map();
+    const scaleFor = shape => scales.get(shape) ?? 1;
+    const apply = button('축척 변경', resize);
+    commands.append(apply, button('취소', () => choose([], '선택을 취소했습니다.')), button('샘플 리셋', reset));
+    const events = connectSelection(scene, { items: () => smShapes, draw,
+      pick(item) { toggle(selected, item); selectionChanged(); },
+      range: shapes => choose(shapes),
+      distance: (point, shape) => {
+        const parts = selectionParts(shape);
+        const lineDistance = Math.min(...parts.map(({ path, closed }) => nearPath(point, closed ? [...path, path[0]] : path)));
+        // 격자나 테두리 안쪽을 눌러도 그 심볼이 선택되며, 겹치면 실제 선에 더 가까운 객체가 우선합니다.
+        const hitRadius = 8 * element.width / element.getBoundingClientRect().width;
+        return Math.min(lineDistance, parts.some(({ path, closed }) => closed && inside(point, path)) ? hitRadius * .9 : Infinity);
+      },
+      contains: (shape, box) => {
+        const parts = selectionParts(shape);
+        const matches = ({ path, closed }) => pathInSelection(path, box, { closed, filled: Boolean(shape.text) });
+        return box.crossing ? parts.some(matches) : parts.every(matches);
+      },
+    });
+    function symbolParts(shape, scale) {
+      const [x, y] = shape.base;
+      return shape.parts.map(({ path, closed }) => ({
+        closed, path: path.map(([u, v]) => [x + (u - x) * scale, y + (v - y) * scale]),
+      }));
+    }
+    function selectionParts(shape) {
+      const scale = scaleFor(shape);
+      return shape.text ? [{ path: textPath(shape, scale), closed: true }] : symbolParts(shape, scale);
+    }
+    function textPath(shape, scale) {
+      const [x, y] = shape.base;
+      const size = shape.font * scale;
+      if (context) context.font = `${size}px "Noto Sans KR", sans-serif`;
+      const width = context?.measureText(shape.text).width ?? shape.text.length * size;
+      return [[x, y - size], [x + width, y - size], [x + width, y + size * .15], [x, y + size * .15]];
+    }
+    function choose(items, message) {
+      replaceSelection(selected, items);
+      selectionChanged(message);
+    }
+    function selectionChanged(message) {
+      status.textContent = message || '객체를 고르고 축척 배율을 지정하세요. 기준점은 도면에 사각형으로 표시됩니다.';
+      draw();
+    }
+    function reset() {
+      scales.clear(); previous.clear(); factor.value = '1.5'; showBefore.checked = true;
+      events.clear();
+      choose([]);
+    }
+    function resize() {
+      const multiplier = factor.valueAsNumber;
+      if (!(Number.isFinite(multiplier) && multiplier > 0) ||
+        [...selected].some(shape => !Number.isFinite(scaleFor(shape) * multiplier * 800) || scaleFor(shape) * multiplier === 0)) {
+        status.textContent = '유효한 양수 배율을 입력하세요.'; return;
+      }
+      previous.clear();
+      // 블록·문자의 삽입점과 나머지 객체의 경계상자 중심은 서로 독립적입니다.
+      for (const shape of selected) {
+        previous.set(shape, scaleFor(shape));
+        scales.set(shape, scaleFor(shape) * multiplier);
+      }
+      choose([], `객체 ${previous.size}개에 ×${multiplier}를 적용했습니다.`);
+    }
+    function drawShape(shape, scale, marked, hovered, before = false) {
+      if (shape.text) {
+        if (before) stroke(context, textPath(shape, scale), shape.color, 1.2, true);
+        else {
+          context.font = `${shape.font * scale}px "Noto Sans KR", sans-serif`;
+          objectText(context, shape.text, ...shape.base, shape.color, marked, hovered);
+        }
+        return;
+      }
+      const style = objectStyle(shape.color, marked, hovered);
+      for (const { path, closed } of symbolParts(shape, scale)) stroke(context, path, style.color, style.width, closed);
+    }
+    function draw() {
+      apply.disabled = !selected.size;
+      badge.textContent = selected.size ? `선택 ${selected.size}개` : `축척 변경 ${previous.size}개`;
+      if (!context) return;
+      context.clearRect(0, 0, element.width, element.height);
+      context.save();
+      context.textAlign = 'center';
+      context.font = '21px "Noto Sans KR", sans-serif';
+      for (const { name, center: [x, y] } of smShapes) objectText(context, name, x, y + 66, '#a9bbc6');
+      context.restore();
+      if (showBefore.checked) {
+        context.save(); context.setLineDash([5, 5]); context.globalAlpha = .4;
+        for (const [shape, scale] of previous) drawShape(shape, scale, false, false, true);
+        context.restore();
+      }
+      for (const shape of smShapes) {
+        drawShape(shape, scaleFor(shape), selected.has(shape), events.current() === shape);
+        if (selected.has(shape) || previous.has(shape)) snapMarker(context, shape.base, '', '#d7e3ea');
+      }
+    }
+    showBefore.addEventListener('change', draw);
+    reset();
+    bindCursorGuide(element, () => selected.size ? '삽입점 또는 경계상자 중심을 확인하고 ‘축척 변경’을 누르세요.' :
+      previous.size ? '고정된 기준점과 변경 전·후 윤곽을 비교하세요.' : '축척을 바꿀 객체를 클릭 또는 드래그하세요.', { scope: scene.view });
     return scene.view;
   };
 })();
@@ -13326,12 +14188,14 @@ window.exampleGuides = {
     identity.append(meta);
     header.append(identity);
     if (guide && item.technology === 'cad') {
+      // 한 원본 파일에 여러 명령이 있는 경우 현재 기능에서 실행할 명령 한 개를 복사합니다.
+      const commandText = feature?.command || guide.command || item.entry;
       const copy = button('명령어 복사', 'button-primary', async () => {
         try {
-          await navigator.clipboard.writeText(item.entry);
-          copyStatus.textContent = `${item.entry} 복사됨`;
+          await navigator.clipboard.writeText(commandText);
+          copyStatus.textContent = `${commandText} 복사됨`;
         } catch {
-          copyStatus.textContent = `명령창에 ${item.entry}를 입력합니다.`;
+          copyStatus.textContent = `명령창에 ${commandText}를 입력합니다.`;
         }
       });
       const copyStatus = element('span', '', 'copy-status');
@@ -13402,6 +14266,8 @@ window.exampleGuides = {
       'plot-preview': window.buildPoutPane, 'point-on-line': window.buildPtolPane,
       'purge-definitions': window.buildPuPane, 'polyline-vertices': window.buildPvPane,
       'polyline-width': window.buildPwPane, 'quick-dimension': window.buildQddPane, 'text-replace': window.buildQfPane,
+      'layer-preset': window.buildQlaPane, 'elevation-filter': window.buildSelzPane,
+      'live-survey': window.buildSlPane, 'object-scale': window.buildSmPane,
       'excel-data-link': choice => window.buildXl2cPane(choice.id, choice.id === feature.id ? initialObject : undefined),
     }[kind];
     const workspace = kind === 'layer' ? window.createLayerPreview() : kind === 'break' ? createBreakPreview() : null;
@@ -13855,12 +14721,22 @@ window.exampleGuides = {
     touchButton = null;
     if (Math.hypot(event.clientX - x, event.clientY - y) >= 9 || control.matches(':disabled') ||
         !control.contains(document.elementFromPoint(event.clientX, event.clientY))) return;
-    activatedByTouch = control;
+    activatedByTouch = { control, x: event.clientX, y: event.clientY };
     control.click();
   });
+  content.addEventListener('touchend', (event) => {
+    // 버튼을 이미 실행했다면 호환 마우스 이벤트의 기본 동작도 차단합니다.
+    // 설정창을 바꾼 뒤 같은 위치에 목록이 나타나면 click 이전에 목록 선택이 일어날 수 있습니다.
+    if (activatedByTouch && event.cancelable && event.touches.length === 0) event.preventDefault();
+  }, { passive: false });
   content.addEventListener('click', (event) => {
-    if (!event.isTrusted || !activatedByTouch?.contains(event.target) ||
+    if (!event.isTrusted || !activatedByTouch ||
         (event.pointerType ? event.pointerType !== 'touch' : event.detail === 0)) return;
+    const { control, x, y } = activatedByTouch;
+    // QLA처럼 탭 한 번으로 창을 바꾸면 같은 탭의 호환 click이 새 창의 버튼에 도착할 수 있습니다.
+    // 기존 버튼이 사라진 경우에만 같은 위치의 click도 중복으로 처리합니다. 다음 pointerdown에서 기록은 지워집니다.
+    if (!control.contains(event.target) &&
+        (control.getClientRects().length || Math.hypot(event.clientX - x, event.clientY - y) > 3)) return;
     activatedByTouch = null;
     event.preventDefault();
     event.stopImmediatePropagation();
